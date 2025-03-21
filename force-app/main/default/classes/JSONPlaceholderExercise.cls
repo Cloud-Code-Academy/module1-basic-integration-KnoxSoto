@@ -126,13 +126,22 @@ public class JSONPlaceholderExercise {
     public static String patchPostTitle(Integer postId, String title) {
         // TODO: Student Implementation
         // 1. Create a new HTTP request
-        // 2. Set the endpoint URL using BASE_URL + '/posts/' + postId
+         // 2. Set the endpoint URL using BASE_URL + '/posts/' + postId
         // 3. Set the HTTP method to 'PATCH'
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(BASE_URL + '/posts/' + postId);
+        request.setMethod('PATCH');
         // 4. Create a JSON string with only the title
+        Map<String, Object> titleMap = new Map<String, Object>();
+        titleMap.put('title', title);
+        String jsonBody = JSON.serialize(titleMap);
+        request.setBody(jsonBody);
         // 5. Set the request body
         // 6. Send the request and get the response
         // 7. Return the response body as string
-        return null;
+        Http http = new Http();
+        HttpResponse response = http.send(request);
+        return response.getBody();
     }
     
     /**
