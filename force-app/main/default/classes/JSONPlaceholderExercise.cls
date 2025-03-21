@@ -8,15 +8,27 @@ public class JSONPlaceholderExercise {
      * @return String - The JSON response from the API
      */
     public static String getPostById(Integer postId) {
-        // TODO: Student Implementation
-        // 1. Create a new HTTP request
-        // 2. Set the endpoint URL using BASE_URL + '/posts/' + postId
-        // 3. Set the HTTP method to 'GET'
-        // 4. Send the request and get the response
-        // 5. Return the response body as string
-        return null;
-    }
+      // TODO: Student Implementation
     
+        // 1. Create a new HTTP request
+         // 2. Set the endpoint URL using BASE_URL + '/posts/' + postId
+        // 3. Set the HTTP method to 'GET'
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(BASE_URL + '/posts/' + postId);
+        request.setMethod('GET');
+
+       // 4. Send the request and get the response
+       Http http = new Http();
+       HttpResponse response = http.send(request);
+       // 5. Return the response body as string
+       System.debug(response.getBody());
+       if(response.getStatusCode() == 200){
+           return response.getBody();
+       }
+       return null;
+   }
+    
+  
     /**
      * Exercise 2: Implement a POST request to create a new post
      * Endpoint: /posts
@@ -26,15 +38,46 @@ public class JSONPlaceholderExercise {
      * @return String - The JSON response from the API
      */
     public static String createPost(String title, String body, Integer userId) {
-        // TODO: Student Implementation
-        // 1. Create a new HTTP request
-        // 2. Set the endpoint URL using BASE_URL + '/posts'
-        // 3. Set the HTTP method to 'POST'
-        // 4. Create a JSON string with the post data
-        // 5. Set the request body
-        // 6. Send the request and get the response
-        // 7. Return the response body as string
-        return null;
+       
+        HttpRequest request = new HttpRequest();
+        
+        
+        request.setEndpoint(BASE_URL + '/posts');
+        
+        
+        request.setMethod('POST');
+        
+     
+        Map<String, Object> postData = new Map<String, Object>{
+            'title' => title,
+            'body' => body,
+            'userId' => userId
+        };
+        
+        
+        String jsonBody = JSON.serialize(postData);
+        
+        
+        request.setHeader('Content-Type', 'application/json');
+        request.setBody(jsonBody);
+        
+        try {
+            
+            Http http = new Http();
+            HttpResponse response = http.send(request);
+            
+            
+            if(response.getStatusCode() == 201) {
+                System.debug('Post created successfully: ' + response.getBody());
+                return response.getBody();
+            } else {
+                System.debug('Error creating post. Status: ' + response.getStatusCode());
+                return 'Error: ' + response.getStatus() + ' - ' + response.getBody();
+            }
+        } catch(Exception e) {
+            System.debug('Exception occurred: ' + e.getMessage());
+            return 'Error: ' + e.getMessage();
+        }
     }
     
     /**
@@ -49,13 +92,28 @@ public class JSONPlaceholderExercise {
     public static String updatePost(Integer postId, String title, String body, Integer userId) {
         // TODO: Student Implementation
         // 1. Create a new HTTP request
-        // 2. Set the endpoint URL using BASE_URL + '/posts/' + postId
+         // 2. Set the endpoint URL using BASE_URL + '/posts/' + postId
         // 3. Set the HTTP method to 'PUT'
+        HttpRequest req = new HttpRequest();
+        req.setEndpoint(BASE_URL+ '/posts');
+        req.setMethod('PUT');
+        req.setHeader('Content-Type', 'application/json');
+        
+
+        Http http = new Http();
+       HttpResponse response = http.send(req);
+       
+       if(response.getStatusCode() == 201){
+         return response.getBody();
+       } else{
+        return null;
+       }
         // 4. Create a JSON string with the updated post data
+        
         // 5. Set the request body
         // 6. Send the request and get the response
         // 7. Return the response body as string
-        return null;
+        
     }
     
     /**
@@ -68,13 +126,22 @@ public class JSONPlaceholderExercise {
     public static String patchPostTitle(Integer postId, String title) {
         // TODO: Student Implementation
         // 1. Create a new HTTP request
-        // 2. Set the endpoint URL using BASE_URL + '/posts/' + postId
+         // 2. Set the endpoint URL using BASE_URL + '/posts/' + postId
         // 3. Set the HTTP method to 'PATCH'
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint(BASE_URL + '/posts/' + postId);
+        request.setMethod('PATCH');
         // 4. Create a JSON string with only the title
+        Map<String, Object> titleMap = new Map<String, Object>();
+        titleMap.put('title', title);
+        String jsonBody = JSON.serialize(titleMap);
+        request.setBody(jsonBody);
         // 5. Set the request body
         // 6. Send the request and get the response
         // 7. Return the response body as string
-        return null;
+        Http http = new Http();
+        HttpResponse response = http.send(request);
+        return response.getBody();
     }
     
     /**
